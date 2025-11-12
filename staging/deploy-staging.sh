@@ -95,10 +95,19 @@ kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=postgresql -n c
 
 echo ""
 print_info "Step 4/7: Creating Keycloak databases"
+
+# Get PostgreSQL password from Secret
+export PGPASSWORD=$(kubectl get secret postgresql -n caring-note-staging -o jsonpath="{.data.postgres-password}" | base64 -d)
+
+# Get Keycloak DB password from Secret
+KEYCLOAK_DB_PASSWORD=$(kubectl get secret keycloak-externaldb -n caring-note-staging -o jsonpath="{.data.db-password}" | base64 -d)
+
 print_info "Creating keycloak_staging database..."
-kubectl exec -it postgresql-0 -n caring-note-staging -- psql -U postgres -c "CREATE DATABASE keycloak_staging;"
-kubectl exec -it postgresql-0 -n caring-note-staging -- psql -U postgres -c "CREATE USER keycloak_staging WITH PASSWORD 'changeme';"
-kubectl exec -it postgresql-0 -n caring-note-staging -- psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE keycloak_staging TO keycloak_staging;"
+kubectl exec -i postgresql-0 -n caring-note-staging -- env PGPASSWORD="$PGPASSWORD" psql -U postgres -c "CREATE DATABASE keycloak_staging;" || true
+kubectl exec -i postgresql-0 -n caring-note-staging -- env PGPASSWORD="$PGPASSWORD" psql -U postgres -c "CREATE USER keycloak_staging WITH PASSWORD '$KEYCLOAK_DB_PASSWORD';" || true
+kubectl exec -i postgresql-0 -n caring-note-staging -- env PGPASSWORD="$PGPASSWORD" psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE keycloak_staging TO keycloak_staging;" || true
+
+unset PGPASSWORD
 
 echo ""
 print_info "Step 5/7: Installing Keycloak (Helm)"
