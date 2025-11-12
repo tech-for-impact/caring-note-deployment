@@ -129,13 +129,13 @@ auth:
   adminUser: cnAdmin
   ## @param auth.adminPassword Keycloak administrator password for the new user
   ##
-  adminPassword: caringNote@2024
+  adminPassword: ""
   ## @param auth.existingSecret Existing secret containing Keycloak admin password
   ##
-  existingSecret: ""
+  existingSecret: "keycloak"
   ## @param auth.passwordSecretKey Key where the Keycloak admin password is being stored inside the existing secret.
   ##
-  passwordSecretKey: ""
+  passwordSecretKey: "admin-password"
   ## @param auth.annotations Additional custom annotations for Keycloak auth secret object
   ##
   annotations: {}
@@ -1374,13 +1374,13 @@ externalDatabase:
   port: 5432
   user: postgres
   database: keycloak
-  password: caringNote2024!!
-  existingSecret: ""
+  password: ""
+  existingSecret: "keycloak-externaldb"
   existingSecretHostKey: ""
   existingSecretPortKey: ""
   existingSecretUserKey: ""
   existingSecretDatabaseKey: ""
-  existingSecretPasswordKey: ""
+  existingSecretPasswordKey: "db-password"
   annotations: {}
 ## @section Keycloak Cache parameters
 

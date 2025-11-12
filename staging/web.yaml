@@ -13,9 +13,11 @@ spec:
       labels:
         app: caring-note-web
     spec:
+      imagePullSecrets:
+        - name: kcr-secret
       containers:
         - name: caring-note-web
-          image: bsh998/caring-note-web:4556f80a0ace1649fd1e30221afd959f61514562
+          image: medi-bird.kr-central-2.kcr.dev/cn-web-stage/cn-web-stage:latest
           imagePullPolicy: Always
           env:
             - name: VITE_KEYCLOAK_CLIENT_ID

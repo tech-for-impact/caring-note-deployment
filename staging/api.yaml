@@ -18,24 +18,26 @@ spec:
       labels:
         app: caring-note-api
     spec:
+      imagePullSecrets:
+        - name: kcr-secret
       containers:
         - name: caring-note-api
-          image: bsh998/caring-note-api:959320a99d1515fa7e65accaeb1965ce7c9dd8cf
+          image: medi-bird.kr-central-2.kcr.dev/cn-api-stage/cn-api-stage:latest
           imagePullPolicy: Always
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: 'staging'
             - name: SPRING_DATASOURCE_URL
-              value: 'jdbc:postgresql://postgresql.default.svc.cluster.local:5432/caring_note_staging'
+              value: 'jdbc:postgresql://postgresql.caring-note-staging.svc.cluster.local:5432/caring_note_staging'
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: api-secret-staging
+                  name: api-secret
                   key: SPRING_DATASOURCE_USERNAME
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: api-secret-staging
+                  name: api-secret
                   key: SPRING_DATASOURCE_PASSWORD
             - name: SPRINGDOC_SWAGGER_UI_PATH
               value: '/swagger-ui'
@@ -52,12 +54,12 @@ spec:
             - name: SPRING_AI_OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: api-secret-staging
+                  name: api-secret
                   key: OPEN_AI_API_KEY
             - name: NAVER_CLOVA_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: api-secret-staging
+                  name: api-secret
                   key: CLOVA_API_KEY
 
           ports:
