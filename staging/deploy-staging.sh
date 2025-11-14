@@ -132,10 +132,10 @@ helm upgrade --install keycloak bitnami/keycloak \
     --set externalDatabase.database=keycloak_staging \
     --set externalDatabase.existingSecret=keycloak-externaldb \
     --set externalDatabase.existingSecretPasswordKey=db-password \
-    --set resources.limits.memory=2Gi \
-    --set resources.limits.cpu=2000m \
-    --set resources.requests.memory=1Gi \
-    --set resources.requests.cpu=1000m \
+    --set resources.limits.memory=1536Mi \
+    --set resources.limits.cpu=1000m \
+    --set resources.requests.memory=512Mi \
+    --set resources.requests.cpu=300m \
     --namespace caring-note-staging \
     --wait \
     --timeout 10m
