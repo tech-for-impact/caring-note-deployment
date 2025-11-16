@@ -28,7 +28,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: 'staging'
             - name: SPRING_DATASOURCE_URL
-              value: 'jdbc:postgresql://postgresql.caring-note-staging.svc.cluster.local:5432/caring_note_staging'
+              value: 'jdbc:postgresql://postgresql.caring-note-staging.svc.cluster.local:5432/caring_note'
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:

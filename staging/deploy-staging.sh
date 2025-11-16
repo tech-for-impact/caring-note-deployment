@@ -80,6 +80,7 @@ print_info "Step 3/7: Installing PostgreSQL (Helm)"
 helm upgrade --install postgresql ../common/postgresql \
     -f ../common/postgresql/values.yaml \
     --set auth.database=caring_note_staging \
+    --set auth.username=caringnote \
     --set auth.existingSecret=postgresql \
     --set primary.persistence.size=100Gi \
     --set primary.resources.limits.memory=2Gi \
