@@ -47,7 +47,9 @@ spec:
               value: '/v1/api-docs'
             - name: SERVER_SERVLET_CONTEXT_PATH
               value: '/api/'
-            - name: SPRING_JPA_HIBERNATE_DIALECT
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+              value: 'org.hibernate.dialect.PostgreSQLDialect'
+            - name: SPRING_JPA_DATABASE-PLATFORM
               value: 'org.hibernate.dialect.PostgreSQLDialect'
             - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
               value: 'org.postgresql.Driver'
