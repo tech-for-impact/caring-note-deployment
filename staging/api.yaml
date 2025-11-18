@@ -63,6 +63,10 @@ spec:
                 secretKeyRef:
                   name: api-secret
                   key: CLOVA_API_KEY
+            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
+              value: 'https://stage.caringnote.co.kr/keycloak/realms/caringnote'
+            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI
+              value: 'https://stage.caringnote.co.kr/keycloak/realms/caringnote/protocol/openid-connect/certs'
 
           ports:
             - containerPort: 8080
