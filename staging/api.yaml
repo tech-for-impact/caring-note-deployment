@@ -67,6 +67,11 @@ spec:
               value: 'https://stage.caringnote.co.kr/keycloak/realms/caringnote'
             - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI
               value: 'https://stage.caringnote.co.kr/keycloak/realms/caringnote/protocol/openid-connect/certs'
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: api-secret
+                  key: SENTRY_DSN
 
           ports:
             - containerPort: 8080
