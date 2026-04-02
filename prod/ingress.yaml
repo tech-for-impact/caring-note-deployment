@@ -27,6 +27,13 @@ spec:
             name: caring-note-api
             port:
               number: 8080
+      - path: /about
+        pathType: Prefix
+        backend:
+          service:
+            name: framer-proxy
+            port:
+              number: 80
       - path: /
         pathType: Prefix
         backend:
