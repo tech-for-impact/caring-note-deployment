@@ -15,6 +15,7 @@ data:
         proxy_ssl_name caring-note.framer.website;
         proxy_set_header Accept-Encoding "";
         sub_filter 'https://caring-note.framer.website' 'https://stage.caringnote.co.kr';
+        sub_filter 'https://caringnote.co.kr' 'https://stage.caringnote.co.kr';
         sub_filter_once off;
         sub_filter_types text/html;
       }
