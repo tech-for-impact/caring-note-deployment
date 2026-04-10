@@ -21,6 +21,7 @@ graph TB
 
     Ingress -->|"/"| Web["caring-note-web<br/>(React + Nginx)"]
     Ingress -->|"/api/"| API["caring-note-api<br/>(Spring Boot :8080)"]
+    Ingress -->|"/about"| Framer["framer-proxy<br/>(Nginx → Framer)"]
     Ingress -->|"/keycloak/"| KC["Keycloak<br/>(:8080)"]
 
     API --> DB[("PostgreSQL<br/>:5432")]
@@ -51,7 +52,9 @@ graph LR
     subgraph "Production (default)"
         NginxIngress -->|"/"| WebProd["web :80"]
         NginxIngress -->|"/api/"| APIProd["api :8080"]
+        NginxIngress -->|"/about"| FramerProd["framer-proxy :80"]
         NginxIngress -->|"/keycloak/"| KCProd["keycloak :8080"]
+        FramerProd -->|"proxy_pass"| FramerSite["caring-note.framer.website"]
         APIProd --> DBProd[("postgresql :5432")]
         KCProd --> DBProd
     end
@@ -59,7 +62,9 @@ graph LR
     subgraph "Staging (caring-note-staging)"
         NginxIngress -->|"stage.*"| WebStg["web :80"]
         NginxIngress -->|"stage.*/api/"| APIStg["api :8080"]
+        NginxIngress -->|"stage.*/about"| FramerStg["framer-proxy :80"]
         NginxIngress -->|"stage.*/keycloak/"| KCStg["keycloak :8080"]
+        FramerStg -->|"proxy_pass"| FramerSite
         APIStg --> DBStg[("postgresql :5432")]
         KCStg --> DBStg
     end
@@ -109,11 +114,13 @@ flowchart LR
 │   └── postgresql-pv-staging.yaml  # PV (Staging: /mnt/data/postgresql-staging, 100Gi)
 ├── prod/                           # 프로덕션 매니페스트 ⭐
 │   ├── api.yaml
+│   ├── framer-proxy.yaml           # Framer 프록시 (/about 경로)
 │   ├── ingress.yaml
 │   └── web.yaml
 ├── staging/                        # 스테이징 매니페스트 ⭐
 │   ├── api.yaml
 │   ├── deploy-staging.sh
+│   ├── framer-proxy.yaml           # Framer 프록시 (/about 경로)
 │   ├── ingress.yaml
 │   └── web.yaml
 └── docs/                           # 운영 문서
@@ -122,6 +129,22 @@ flowchart LR
 **주요 설계**:
 - PostgreSQL/Keycloak values 파일은 환경 공통, 차이는 Helm `--set`으로 주입
 - Secret 참조 방식 통일 (Git에 평문 비밀번호 미저장)
+
+## Framer 프록시 (`/about` 경로)
+
+Framer로 제작한 소개 페이지를 메인 도메인의 `/about` 경로에서 서비스하기 위해 Nginx 리버스 프록시를 사용합니다. 프론트엔드(`caring-note-web`)의 `/about` 라우팅과 연결됩니다.
+
+**동작 방식:**
+- Ingress가 `/about` 요청을 `framer-proxy` 서비스로 라우팅
+- Nginx가 `/about` prefix를 제거 후 `https://caring-note.framer.website/`로 프록시
+- `sub_filter`로 응답 본문의 Framer 도메인을 각 환경 도메인으로 치환
+  - Production: `caring-note.framer.website` → `caringnote.co.kr`
+  - Staging: `caring-note.framer.website`, `caringnote.co.kr` → `stage.caringnote.co.kr`
+
+**관련 파일:**
+- `prod/framer-proxy.yaml` — Production용 ConfigMap/Deployment/Service (`default` namespace)
+- `staging/framer-proxy.yaml` — Staging용 ConfigMap/Deployment/Service (`caring-note-staging` namespace)
+- `prod/ingress.yaml`, `staging/ingress.yaml` — `/about` 경로 라우팅 규칙
 
 ## K8s 클러스터 설정
 
